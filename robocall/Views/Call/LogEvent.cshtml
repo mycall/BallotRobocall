@@ -1,0 +1,15 @@
+﻿@model robocall.Models.LogEventModel
+@{
+    Layout = "~/Views/Shared/_CallXmlLayout.cshtml";
+}
+
+<block label="End">
+
+    <log value="Call End" />
+    <assign var="log" value="Call End" />
+    <assign var="LogSessionID" value="$CallerSessionID;" />
+    <sendevent value="CallFail" session="$CallerSessionID;" />
+    <onhangup />
+    <onerror />
+
+</block>
