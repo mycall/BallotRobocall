@@ -10,7 +10,7 @@ namespace robocall.Models
 {
     public class LogEventModel
     {
-        public FormCollection FormCollection { get; set; }
+        public FormCollection FormCollection { get; private set; }
 
         public LogEventModel(NameValueCollection QueryString)
         {
@@ -29,16 +29,15 @@ namespace robocall.Models
             if (campaign == null)
                 throw new Exception("Unknown Campaign");
 
-            foreach (string item in FormCollection)
-            {
-                service.SetCallResult(campaign.Name, PhoneNumber, item + ": " + FormCollection[item]);
-            }
-
+            service.SetCallResult(CampaignName, PhoneNumber, Status);
+            service.SaveCallLog(CampaignName, PhoneNumber, FormCollection);
         }
 
-        private string CampaignName { get { return FormCollection["CampaignName"]; } }
+        public string CampaignName { get { return FormCollection["CampaignName"]; } }
 
-        private string PhoneNumber { get { return FormCollection["RealNumber"]; } }
+        public string PhoneNumber { get { return FormCollection["RealNumber"]; } }
+
+        public string Status { get { return FormCollection["log"] == "Call End" ? "called" : FormCollection["log"]; } }
 
     }
 }

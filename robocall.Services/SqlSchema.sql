@@ -1,6 +1,6 @@
 ﻿USE [master]
 GO
-/****** Object:  Database [BallotRobocall]    Script Date: 10/22/2014 8:34:50 PM ******/
+/****** Object:  Database [BallotRobocall]    Script Date: 10/23/2014 8:07:57 PM ******/
 CREATE DATABASE [BallotRobocall]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -77,14 +77,14 @@ EXEC sys.sp_db_vardecimal_storage_format N'BallotRobocall', N'ON'
 GO
 USE [BallotRobocall]
 GO
-/****** Object:  User [ballot]    Script Date: 10/22/2014 8:34:51 PM ******/
+/****** Object:  User [ballot]    Script Date: 10/23/2014 8:07:57 PM ******/
 CREATE USER [ballot] FOR LOGIN [ballot] WITH DEFAULT_SCHEMA=[dbo]
 GO
 ALTER ROLE [db_datareader] ADD MEMBER [ballot]
 GO
 ALTER ROLE [db_datawriter] ADD MEMBER [ballot]
 GO
-/****** Object:  Table [dbo].[CallLog]    Script Date: 10/22/2014 8:34:52 PM ******/
+/****** Object:  Table [dbo].[CallLog]    Script Date: 10/23/2014 8:07:57 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -105,7 +105,7 @@ CREATE TABLE [dbo].[CallLog](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[Campaigns]    Script Date: 10/22/2014 8:34:52 PM ******/
+/****** Object:  Table [dbo].[Campaigns]    Script Date: 10/23/2014 8:07:57 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -134,7 +134,7 @@ CREATE TABLE [dbo].[Campaigns](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [dbo].[PhoneList]    Script Date: 10/22/2014 8:34:52 PM ******/
+/****** Object:  Table [dbo].[PhoneList]    Script Date: 10/23/2014 8:07:57 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

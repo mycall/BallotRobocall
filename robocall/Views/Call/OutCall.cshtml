@@ -9,113 +9,56 @@
     <assign var="CampaignName" value="@Model.CampaignName" />
 
     <!-- http://help.voxeo.com/go/callxml/element.call -->
-    <call value="$RealNumber;" maxtime="35s" callerid="@Model.CallerID" answeronmedia="@Model.AnswerOnMedia.ToString()" />
+    @if (!Model.IsDone)
+    {
+        <call value="$RealNumber;" maxtime="35s" callerid="@Model.CallerID" answeronmedia="@Model.AnswerOnMedia.ToString()" />
+    }
 
     <on event="answer">
         <do label="MessageBlock" repeat="1">
             <log value="*** ANSWER = SUCCESS ***" />
             <playaudio value="$AudioFile;" />
             <wait value="3s" />
+            <log value="** DONE **" />
+            <assign var="log" value="done" />
         </do>
-    </on>
-
-    <on event="callfailure">
-        <log value="*** ANSWER = CALL FAILURE ***" />
-        <run value="@Url.Action("LogEvent", "Call")" submit="*" method="get" cache="No" />
-        <wait value="1s" />
-        @if (Model.IsLastAttempt)
-        {
-            <log value="Attempt #@Model.CallCount failed" />
-            <assign var="attempt" value="@(Model.CallCount)" />
-        }
-        else
-        {
-            <log value="last attempt failed" />
-            <goto value="#End" />
-        }
-        <onerror />
-        <goto value="#End" />
-    </on>
-
-    <on event="onmaxtime">
-        <log value="*** ANSWER = CALL FAILURE (MAXTIME) ***" />
-        <assign var="log" value="OnMaxTime - Calling - $PhoneNumber;" />
-        <assign var="LogSessionID" value="$CallerSessionID;" />
-        <run value="@Url.Action("LogEvent", "Call")" submit="*" method="get" cache="No" />
-        <wait value="1s" />
-        @if (Model.IsLastAttempt)
-        {
-            <log value="Attempt #@Model.CallCount failed" />
-            <assign var="attempt" value="@(Model.CallCount)" />
-        }
-        else
-        {
-            <log value="last attempt failed" />
-            <goto value="#End" />
-        }
-        <onerror />
-        <goto value="#End" />
-    </on>
-
-    <on event="onerror">
-        <log value="*** ANSWER = CALL ERROR ***" />
-        <assign var="log" value="OnError" />
-        <assign var="LogSessionID" value="$CallerSessionID;" />
-        <run value="@Url.Action("LogEvent", "Call")" submit="*" method="get" cache="No" />
-        @if (Model.IsLastAttempt)
-        {
-            <log value="Attempt #@Model.CallCount failed" />
-            <assign var="attempt" value="@(Model.CallCount)" />
-        }
-        else
-        {
-            <log value="last attempt failed" />
-            <goto value="#End" />
-        }
-        <onerror />
-        <goto value="#End" />
-    </on>
-
-    <on event="externalevent:success">
-        <log>*** EVENT = SUCCESS ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:busy">
-        <log>*** EVENT = BUSY ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:noanswer">
-        <log>*** EVENT = NOANSWER ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:unreachable">
-        <log>*** EVENT = UNREACHABLE ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:rejected">
-        <log>*** EVENT = REJECTED ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:unknown">
-        <log>*** EVENT = UNKNOWN ***</log>
-        <goto value="#End" />
-    </on>
-    <on event="externalevent:TimedOut">
-        <log>*** EVENT = TIMED OUT ***</log>
-        <goto value="#End" />
     </on>
 
 </block>
 
+<on event="callfailure">
+    <log value="*** ANSWER = CALL FAILURE ***" />
+    <assign var="log" value="CallFailure" />
+    <goto value="#End" />
+</on>
+
+<on event="maxtime">
+    <log value="*** ANSWER = CALL FAILURE (MAXTIME) ***" />
+    <assign var="log" value="MaxTime" />
+    <goto value="#End" />
+</on>
+
+<on event="hangup">
+    <log value="*** ANSWER = CALL HANGUP ***" />
+    <assign var="log" value="Hangup" />
+    <goto value="#End" />
+</on>
+
+<on event="error">
+    <log value="*** ANSWER = CALL ERROR ***" />
+    <assign var="log" value="OnError" />
+    <goto value="#End" />
+</on>
+
+<on event="externalevent:busy">
+    <log>*** EVENT = BUSY ***</log>
+    <assign var="log" value="ExternalEventBusy" />
+    <goto value="#End" />
+</on>
 
 <block label="End">
-
-    <log value="Call End" />
-    <assign var="log" value="Call End" />
-    <assign var="LogSessionID" value="$CallerSessionID;" />
-    <run value="@Url.Action("LogEvent", "Call")" submit="*" method="get" cache="No" />
-    <sendevent value="CallFail" session="$CallerSessionID;" />
-    <onhangup />
-    <onerror />
-
+    @if (!Model.IsDone)
+    {
+        <run value="@Url.Action("LogEvent", "Call")" submit="*" method="get" cache="No" />
+    }
 </block>
